@@ -1,0 +1,15 @@
+schemaVersion: "1"
+kind: mixin
+name: shell-agent
+
+commands:
+  install:
+    - command: |
+        brew install \
+          fd \
+          gron \
+          jo \
+          miller \
+          sd \
+          yq
+      user: "1000"

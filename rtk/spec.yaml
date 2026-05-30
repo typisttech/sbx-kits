@@ -1,0 +1,24 @@
+schemaVersion: "1"
+kind: mixin
+name: rtk
+
+environment:
+  variables:
+    RTK_TELEMETRY_DISABLED: "1"
+
+commands:
+  install:
+    - command: |
+        set -euo pipefail
+        mkdir -p ~/.local/share
+        ln -s /Users/work/Developer/Agents/rtk/share ~/.local/share/rtk
+      user: "1000"
+
+    - command: brew install rtk
+      user: "1000"
+
+    - command: rtk telemetry disable
+      user: "1000"
+
+    - command: rtk init -g --hook-only --opencode
+      user: "1000"

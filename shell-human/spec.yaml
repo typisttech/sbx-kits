@@ -1,0 +1,28 @@
+schemaVersion: "1"
+kind: mixin
+name: shell-human
+
+environment:
+  variables:
+    EDITOR: "nano"
+
+commands:
+  install:
+    # TODO: Symlink zsh histories
+    - command: |
+        brew install \
+          fzf \
+          nano \
+          starship \
+          tree \
+          zoxide \
+          zsh-autosuggestions \
+          zsh-history-substring-search \
+          zsh-syntax-highlighting
+      user: "1000"
+
+    - command: |
+        set -euo pipefail
+        mkdir -p ~/.local/share
+        ln -s /Users/work/Developer/Agents/zoxide/share ~/.local/share/zoxide
+      user: "1000"

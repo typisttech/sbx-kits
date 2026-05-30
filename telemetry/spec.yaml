@@ -1,0 +1,10 @@
+schemaVersion: "1"
+kind: mixin
+name: telemetry
+
+environment:
+  variables:
+    DISABLE_TELEMETRY: "1"
+    DO_NOT_TRACK: "1"
+    HOMEBREW_NO_ANALYTICS: "1"
+    SBX_NO_TELEMETRY: "1"
