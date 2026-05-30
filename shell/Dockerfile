@@ -1,4 +1,4 @@
-FROM docker.io/library/ubuntu:26.04@sha256:98ce78d9714d15b1785dd97da22ec7c2506270ff7c910160bc07e393566f7568
+FROM docker.io/library/ubuntu:26.04@sha256:f3d28607ddd78734bb7f71f117f3c6706c666b8b76cbff7c9ff6e5718d46ff64
 
 ARG DEBIAN_FRONTEND=noninteractive
 ENV TZ=UTC
