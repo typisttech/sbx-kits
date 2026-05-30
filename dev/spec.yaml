@@ -1,0 +1,40 @@
+schemaVersion: "1"
+kind: agent
+name: dev
+
+agent:
+  image: "ghcr.io/typisttech/sandbox-templates:dev"
+  aiFilename: ANGENTS.md
+  entrypoint:
+    run: [zsh]
+
+environment:
+  variables:
+    IS_SANDBOX: "1"
+
+    # Telemetry
+    DISABLE_TELEMETRY: "1"
+    DO_NOT_TRACK: "1"
+    SBX_NO_TELEMETRY: "1"
+
+    # Mise
+    ## Treat the whole sandbox filesystem as trusted so `.mise.toml` files don't trigger an
+    ## interactive trust prompt. This is appropriate inside a sandbox: the user has already
+    ## opted into running this code by attaching the workspace.
+    MISE_TRUSTED_CONFIG_PATHS: "/"
+    ## Disable telemetry by default - https://mise.jdx.dev/configuration/settings.html#use_versions_host_track
+    MISE_USE_VERSIONS_HOST_TRACK: "false"
+
+    # Human
+    EDITOR: nano
+    ## For Ghostty - https://ghostty.org/docs/help/terminfo
+    TERM: xterm-256color
+
+commands:
+  install:
+    # Human
+    - command: |
+        set -euo pipefail
+        mkdir -p ~/.local/share
+        ln -s /Users/work/Developer/Agents/zoxide/share ~/.local/share/zoxide
+      user: "1000"

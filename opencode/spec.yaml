@@ -1,17 +1,11 @@
 schemaVersion: "1"
-kind: agent
+kind: mixin
 name: opencode
-
-agent:
-  image: "typisttech/sandbox-templates:shell"
-  aiFilename: AGENTS.md
-  entrypoint:
-    run: ["opencode"]
 
 environment:
   variables:
-    IS_SANDBOX: "1"
     OPENCODE_AUTO_SHARE: "false"
+    OPENCODE_DISABLE_AUTOUPDATE: "true"
     OPENCODE_EXPERIMENTAL_LSP_TOOL: "true"
     OPENCODE_EXPERIMENTAL_MARKDOWN: "true"
     OPENCODE_EXPERIMENTAL_PARALLEL: "true"
@@ -33,6 +27,9 @@ commands:
       user: "1000"
       description: Symlink opencode configuration, state, and share directories
 
-    - command: brew install anomalyco/tap/opencode
+    - command: |
+        set -euo pipefail
+        eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv sh)"
+        brew install anomalyco/tap/opencode
       user: "1000"
       description: Install opencode via Homebrew
