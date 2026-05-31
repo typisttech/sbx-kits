@@ -2,7 +2,7 @@ version: 2
 
 updates:
   - package-ecosystem: docker
-    directory: /shell
+    directory: /dev
     schedule:
       interval: daily
     cooldown:

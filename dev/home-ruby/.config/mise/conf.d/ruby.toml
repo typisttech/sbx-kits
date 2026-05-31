@@ -1,0 +1,4 @@
+# To be removed after mise v2026.8.0.
+# https://mise.jdx.dev/lang/ruby.html#precompiled-binaries
+[settings.ruby]
+compile = false
