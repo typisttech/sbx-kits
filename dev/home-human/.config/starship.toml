@@ -1,6 +1,0 @@
-[character]
-error_symbol = '[❌](bold red) '
-
-[env_var.SANDBOX_VM_ID]
-default = 'sbx'
-format = "@ [$symbol$env_value](bold yellow dimmed) "
