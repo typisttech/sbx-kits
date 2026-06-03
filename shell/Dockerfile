@@ -163,7 +163,7 @@ RUN --mount=type=secret,id=GH_TOKEN,env=MISE_GITHUB_TOKEN,required=true,uid=1000
 COPY --chown=agent:agent js/home/ /home/agent/
 
 RUN --mount=type=secret,id=GH_TOKEN,env=MISE_GITHUB_TOKEN,required=true,uid=1000 \
-    mise use --global node@24 npm@11 bun@1 \
+    mise use --global node@lts npm@latest bun@1 \
     && mise settings add idiomatic_version_file_enable_tools bun \
     && mise settings add idiomatic_version_file_enable_tools node \
     && mise settings add idiomatic_version_file_enable_tools npm \
