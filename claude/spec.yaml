@@ -1,0 +1,19 @@
+schemaVersion: "1"
+kind: mixin
+name: claude
+
+network:
+  allowedDomains:
+    - "claude.ai:443"
+
+environment:
+  variables:
+    CLAUDE_CONFIG_DIR: "/Users/work/Developer/Agents/claude"
+
+commands:
+  install:
+    - command: |
+        set -euo pipefail
+        curl -fsSL https://claude.ai/install.sh | bash
+      user: "1000"
+      description: Install Claude Code
