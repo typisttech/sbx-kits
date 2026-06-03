@@ -34,11 +34,13 @@ WORKDIR /home/agent/workspace
 
 COPY --chown=agent:agent agent/home/ /home/agent/
 
-RUN echo '\n\nsource ${HOME}/bashrc.sh' >> /home/agent/.bashrc
+RUN echo '\n\nsource ${HOME}/.config/bash/rc.sh' >> /home/agent/.bashrc
 
 # Essentials
 RUN sudo apt-get update \
     && sudo apt-get install --yes --no-install-recommends \
+        bash \
+        bash-completion \
         bc \
         build-essential \
         ca-certificates \
@@ -78,6 +80,7 @@ RUN sudo apt-get update \
 
 # =============================================================================
 # GitHub CLI
+# https://github.com/cli/cli/blob/46480afb125d852c3edd2b4850a97c09b65c64cf/docs/install_linux.md#debian
 # =============================================================================
 COPY --chown=root:root gh/apt/ /etc/apt/
 
@@ -100,6 +103,7 @@ RUN --mount=type=secret,id=GH_TOKEN,env=GH_TOKEN,required=true,uid=1000 \
 
 # =============================================================================
 # Mise
+# https://mise.jdx.dev/installing-mise.html#apt
 # =============================================================================
 COPY --chown=root:root mise/apt/ /etc/apt/
 COPY --chown=agent:agent mise/home/ /home/agent/
@@ -118,11 +122,18 @@ RUN sudo apt-get update \
     && sudo apt-get install --yes --no-install-recommends \
         golang-go \
     && sudo rm -rf /var/lib/apt/lists/* \
-    && go install golang.org/x/tools/gopls@latest \
-    && go clean -cache -testcache -modcache -fuzzcache
+    # Latest toolchain
+    && GO_LATEST=$(curl -fsSL 'https://go.dev/VERSION?m=text' | head -n 1) \
+    && go install "golang.org/dl/${GO_LATEST}@latest" \
+    && "$(go env GOPATH)/bin/${GO_LATEST}" download \
+    # LSP
+    && "$(go env GOPATH)/bin/${GO_LATEST}" install golang.org/x/tools/gopls@latest \
+    && go clean -cache -testcache -modcache -fuzzcache \
+    && "$(go env GOPATH)/bin/${GO_LATEST}" clean -cache -testcache -modcache -fuzzcache
 
 # =============================================================================
 # Ruby on Rails
+# https://guides.rubyonrails.org/install_ruby_on_rails.html#install-ruby-on-ubuntu
 # =============================================================================
 COPY --chown=agent:agent ruby/home/ /home/agent/
 
@@ -160,6 +171,8 @@ RUN --mount=type=secret,id=GH_TOKEN,env=MISE_GITHUB_TOKEN,required=true,uid=1000
 
 # =============================================================================
 # PHP
+# https://github.com/roots/trellis/blob/3c24ff237fa5bb15cf22fdd2fc17b5995d6da870/roles/php/vars/version-specific-defaults.yml
+# https://getcomposer.org/doc/00-intro.md#system-requirements
 # =============================================================================
 COPY --chown=agent:agent php/home/ /home/agent/
 

@@ -9,6 +9,11 @@ agent:
     run: [bash]
     args: ["--login"]
 
+network:
+  allowedDomains:
+    - "mise.en.dev:443"
+    - "go.dev:443"
+
 environment:
   variables:
     IS_SANDBOX: "1"
@@ -34,7 +39,7 @@ environment:
     # Human
     EDITOR: nano
     ## For Ghostty - https://ghostty.org/docs/help/terminfo
-    TERM: xterm-256color
+    TERM: xterm-ghostty
 
   proxyManaged:
     - GITHUB_TOKEN
