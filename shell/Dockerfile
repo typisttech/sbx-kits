@@ -36,7 +36,6 @@ COPY --chown=agent:agent agent/home/ /home/agent/
 
 RUN echo '\n\nsource ${HOME}/.config/bash/rc.sh' >> /home/agent/.bashrc
 
-# Essentials
 RUN sudo apt-get update \
     && sudo apt-get install --yes --no-install-recommends \
         bash \
@@ -59,23 +58,16 @@ RUN sudo apt-get update \
         miller \
         nano \
         openssh-client \
-        openssh-server \
         pkg-config \
         ripgrep \
         ripgrep-all \
-        rsync \
         sd \
-        subversion \
         tar \
-        tmux \
-        tree \
         tree \
         tzdata \
         universal-ctags \
-        unzip \
         wget \
         yq \
-        zip \
     && sudo rm -rf /var/lib/apt/lists/*
 
 # =============================================================================
