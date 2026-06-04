@@ -114,50 +114,6 @@ RUN sudo apt-get update \
     && sudo rm -rf /var/lib/apt/lists/*
 
 # =============================================================================
-# Go
-# =============================================================================
-COPY --chown=agent:agent go/home/ /home/agent/
-
-RUN sudo apt-get update \
-    && sudo apt-get install --yes --no-install-recommends \
-        golang-go \
-    && sudo rm -rf /var/lib/apt/lists/* \
-    # Latest toolchain
-    && GO_LATEST=$(curl -fsSL 'https://go.dev/VERSION?m=text' | head -n 1) \
-    && go install "golang.org/dl/${GO_LATEST}@latest" \
-    && "$(go env GOPATH)/bin/${GO_LATEST}" download \
-    # LSP
-    && "$(go env GOPATH)/bin/${GO_LATEST}" install golang.org/x/tools/gopls@latest \
-    && go clean -cache -testcache -modcache -fuzzcache \
-    && "$(go env GOPATH)/bin/${GO_LATEST}" clean -cache -testcache -modcache -fuzzcache
-
-# =============================================================================
-# Ruby on Rails
-# https://guides.rubyonrails.org/install_ruby_on_rails.html#install-ruby-on-ubuntu
-# =============================================================================
-COPY --chown=agent:agent ruby/home/ /home/agent/
-
-RUN --mount=type=secret,id=GH_TOKEN,env=MISE_GITHUB_TOKEN,required=true,uid=1000 \
-    sudo apt-get update \
-    && sudo apt-get install --yes --no-install-recommends \
-        build-essential \
-        libgmp-dev \
-        libssl-dev \
-        libyaml-dev \
-        rustc \
-        tzdata \
-        zlib1g-dev \
-        sqlite3 \
-    && sudo rm -rf /var/lib/apt/lists/* \
-    && mise use --global ruby@4.0 \
-    && mise settings add idiomatic_version_file_enable_tools ruby \
-    && mise cache clear \
-    && mise exec -- gem update --system \
-    && mise exec -- gem update \
-    && mise exec -- gem install ruby-lsp \
-    && mise exec -- gem cleanup
-
-# =============================================================================
 # JavaScript
 # =============================================================================
 COPY --chown=agent:agent js/home/ /home/agent/
@@ -209,3 +165,47 @@ RUN sudo apt-get update \
     && sudo rm -rf /var/lib/apt/lists/*
 
 COPY --from=composer/composer:latest-bin /composer /usr/bin/composer
+
+# =============================================================================
+# Go
+# =============================================================================
+COPY --chown=agent:agent go/home/ /home/agent/
+
+RUN sudo apt-get update \
+    && sudo apt-get install --yes --no-install-recommends \
+        golang-go \
+    && sudo rm -rf /var/lib/apt/lists/* \
+    # Latest toolchain
+    && GO_LATEST=$(curl -fsSL 'https://go.dev/VERSION?m=text' | head -n 1) \
+    && go install "golang.org/dl/${GO_LATEST}@latest" \
+    && "$(go env GOPATH)/bin/${GO_LATEST}" download \
+    # LSP
+    && "$(go env GOPATH)/bin/${GO_LATEST}" install golang.org/x/tools/gopls@latest \
+    && go clean -cache -testcache -modcache -fuzzcache \
+    && "$(go env GOPATH)/bin/${GO_LATEST}" clean -cache -testcache -modcache -fuzzcache
+
+# =============================================================================
+# Ruby on Rails
+# https://guides.rubyonrails.org/install_ruby_on_rails.html#install-ruby-on-ubuntu
+# =============================================================================
+COPY --chown=agent:agent ruby/home/ /home/agent/
+
+RUN --mount=type=secret,id=GH_TOKEN,env=MISE_GITHUB_TOKEN,required=true,uid=1000 \
+    sudo apt-get update \
+    && sudo apt-get install --yes --no-install-recommends \
+        build-essential \
+        libgmp-dev \
+        libssl-dev \
+        libyaml-dev \
+        rustc \
+        tzdata \
+        zlib1g-dev \
+        sqlite3 \
+    && sudo rm -rf /var/lib/apt/lists/* \
+    && mise use --global ruby@4.0 \
+    && mise settings add idiomatic_version_file_enable_tools ruby \
+    && mise cache clear \
+    && mise exec -- gem update --system \
+    && mise exec -- gem update \
+    && mise exec -- gem install ruby-lsp \
+    && mise exec -- gem cleanup
