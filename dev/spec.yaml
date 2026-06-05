@@ -12,6 +12,7 @@ agent:
 network:
   allowedDomains:
     - "mise.en.dev:443"
+    - "cache.ruby-lang.org"
     - "go.dev:443"
 
 environment:
@@ -44,6 +45,7 @@ environment:
   proxyManaged:
     - GITHUB_TOKEN
     - GH_TOKEN
+    - MISE_GITHUB_TOKEN
 
 commands:
   install:
