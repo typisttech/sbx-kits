@@ -41,7 +41,6 @@ RUN sudo apt-get update \
     && sudo apt-get install --yes --no-install-recommends \
         bash \
         bash-completion \
-        bc \
         build-essential \
         ca-certificates \
         csvkit \
