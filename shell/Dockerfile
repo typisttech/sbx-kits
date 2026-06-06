@@ -6,7 +6,9 @@ ENV TZ=Europe/London
 
 RUN apt-get update \
     && apt-get install --yes --no-install-recommends \
+        bash \
         sudo \
+        tzdata \
     && rm -rf /var/lib/apt/lists/*
 
 # =============================================================================
@@ -37,67 +39,42 @@ COPY --chown=agent:agent agent/home/ /home/agent/
 
 RUN echo '\n\nsource ${HOME}/.config/bash/rc.sh' >> /home/agent/.bashrc
 
+# =============================================================================
+# Homebrew
+# https://docs.brew.sh/Homebrew-on-Linux#requirements
+# =============================================================================
+ARG NONINTERACTIVE=1
+
+ENV PATH="/home/linuxbrew/.linuxbrew/bin:/home/linuxbrew/.linuxbrew/sbin:${PATH}" \
+    HOMEBREW_PREFIX=/home/linuxbrew/.linuxbrew \
+    HOMEBREW_CELLAR=/home/linuxbrew/.linuxbrew/Cellar \
+    HOMEBREW_REPOSITORY=/home/linuxbrew/.linuxbrew/Homebrew
+
+COPY --chown=root:root homebrew/etc/ /etc/
+COPY --chown=agent:agent homebrew/home/ /home/agent/
+
 RUN sudo apt-get update \
     && sudo apt-get install --yes --no-install-recommends \
-        bash \
-        bash-completion \
         build-essential \
         ca-certificates \
-        csvkit \
         curl \
-        dasel \
-        fd-find \
         file \
         git \
-        gnupg \
-        gron \
-        jo \
-        jq \
-        less \
-        lsof \
-        miller \
-        nano \
-        openssh-client \
-        pkg-config \
-        ripgrep \
-        ripgrep-all \
-        sd \
-        tar \
-        tree \
-        tzdata \
-        universal-ctags \
-        wget \
-        yq \
-    && sudo rm -rf /var/lib/apt/lists/*
+        procps \
+    && sudo rm -rf /var/lib/apt/lists/* \
+    && /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
-# =============================================================================
-# GitHub CLI
-# https://github.com/cli/cli/blob/46480afb125d852c3edd2b4850a97c09b65c64cf/docs/install_linux.md#debian
-# =============================================================================
-COPY --chown=root:root gh/apt/ /etc/apt/
-
-RUN sudo apt-get update \
-    && sudo apt-get install --yes --no-install-recommends \
+RUN --mount=type=secret,id=GH_TOKEN,env=HOMEBREW_GITHUB_API_TOKEN,required=true,uid=1000 \
+    brew install \
         gh \
-    && sudo rm -rf /var/lib/apt/lists/*
-
-# =============================================================================
-# rtk
-# =============================================================================
-RUN --mount=type=secret,id=GH_TOKEN,env=GH_TOKEN,required=true,uid=1000 \
-    gh release --repo rtk-ai/rtk download --pattern rtk-aarch64-unknown-linux-gnu.tar.gz \
-    && mkdir rtk \
-    && tar -xzf rtk-aarch64-unknown-linux-gnu.tar.gz -C ./rtk \
-    && sudo mv ./rtk/rtk /usr/local/bin/rtk \
-    && sudo chmod +x /usr/local/bin/rtk \
-    && rm rtk-aarch64-unknown-linux-gnu.tar.gz \
-    && rm -rf ./rtk
+    && brew autoremove \
+    && brew cleanup --scrub --prune=all
 
 # =============================================================================
 # Mise
 # https://mise.jdx.dev/installing-mise.html#apt
 # =============================================================================
-COPY --chown=root:root mise/apt/ /etc/apt/
+COPY --chown=root:root mise/etc/ /etc/
 COPY --chown=agent:agent mise/home/ /home/agent/
 
 RUN sudo apt-get update \
@@ -126,55 +103,39 @@ COPY --chown=agent:agent php/home/ /home/agent/
 
 RUN sudo apt-get update \
     && sudo apt-get install --yes --no-install-recommends \
-        php8.5 \
-        php8.5-bcmath \
-        php8.5-cli \
-        php8.5-common \
-        php8.5-curl \
-        php8.5-dev \
-        php8.5-fpm \
-        php8.5-gd \
-        php8.5-imagick \
-        php8.5-intl \
-        php8.5-mbstring \
-        php8.5-mysql \
-        php8.5-xdebug \
-        php8.5-xml \
-        php8.5-xmlrpc \
-        php8.5-zip \
-    && sudo rm -rf /var/lib/apt/lists/*
-
-RUN sudo apt-get update \
-    && sudo apt-get install --yes --no-install-recommends \
-        git \
-        gzip \
-        p7zip-full \
-        subversion \
         tar \
         unrar \
-        unzip \
-        xz-utils \
     && sudo rm -rf /var/lib/apt/lists/*
 
-COPY --from=composer/composer:latest-bin /composer /usr/bin/composer
+RUN --mount=type=secret,id=GH_TOKEN,env=HOMEBREW_GITHUB_API_TOKEN,required=true,uid=1000 \
+    brew install \
+        php@8.5 \
+        # Package managers
+        composer \
+        pie \
+        # Composer dependencies
+        git \
+        gzip \
+        p7zip \
+        subversion \
+        unzip \
+        xz \
+    && brew autoremove \
+    && brew cleanup --scrub --prune=all
+
+# TODO: PHP LSP
 
 # =============================================================================
 # Go
 # =============================================================================
 COPY --chown=agent:agent go/home/ /home/agent/
 
-RUN sudo apt-get update \
-    && sudo apt-get install --yes --no-install-recommends \
-        golang-go \
-    && sudo rm -rf /var/lib/apt/lists/* \
-    # Latest toolchain
-    && GO_LATEST=$(curl -fsSL 'https://go.dev/VERSION?m=text' | head -n 1) \
-    && go install "golang.org/dl/${GO_LATEST}@latest" \
-    && "$(go env GOPATH)/bin/${GO_LATEST}" download \
-    # LSP
-    && "$(go env GOPATH)/bin/${GO_LATEST}" install golang.org/x/tools/gopls@latest \
-    && go clean -cache -testcache -modcache -fuzzcache \
-    && "$(go env GOPATH)/bin/${GO_LATEST}" clean -cache -testcache -modcache -fuzzcache
+RUN --mount=type=secret,id=GH_TOKEN,env=HOMEBREW_GITHUB_API_TOKEN,required=true,uid=1000 \
+    brew install \
+        go \
+        gopls \
+    && brew autoremove \
+    && brew cleanup --scrub --prune=all
 
 # =============================================================================
 # Ruby on Rails
@@ -182,19 +143,16 @@ RUN sudo apt-get update \
 # =============================================================================
 COPY --chown=agent:agent ruby/home/ /home/agent/
 
+RUN --mount=type=secret,id=GH_TOKEN,env=HOMEBREW_GITHUB_API_TOKEN,required=true,uid=1000 \
+    brew install \
+        libyaml \
+        openssl \
+        pkgconf \
+    && brew autoremove \
+    && brew cleanup --scrub --prune=all
+
 RUN --mount=type=secret,id=GH_TOKEN,env=MISE_GITHUB_TOKEN,required=true,uid=1000 \
-    sudo apt-get update \
-    && sudo apt-get install --yes --no-install-recommends \
-        build-essential \
-        libgmp-dev \
-        libssl-dev \
-        libyaml-dev \
-        rustc \
-        tzdata \
-        zlib1g-dev \
-        sqlite3 \
-    && sudo rm -rf /var/lib/apt/lists/* \
-    && mise use --global ruby@4.0 \
+    mise use --global ruby@4.0 \
     && mise settings add idiomatic_version_file_enable_tools ruby \
     && mise cache clear \
     && mise exec -- gem update --system \

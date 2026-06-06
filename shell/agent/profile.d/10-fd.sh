@@ -1,1 +1,1 @@
-alias fd=fdfind
+# alias fd=fdfind
