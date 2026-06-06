@@ -19,8 +19,6 @@ environment:
   variables:
     IS_SANDBOX: "1"
 
-    TT_AGENTS_DIR: "/Users/work/Developer/Agents"
-
     # Telemetry
     DISABLE_TELEMETRY: "1"
     DO_NOT_TRACK: "1"
