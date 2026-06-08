@@ -49,6 +49,7 @@ RUN sudo apt-get update \
         gnupg \
         less \
         nano \
+        tzdata \
         universal-ctags \
     && sudo rm -rf /var/lib/apt/lists/*
 
