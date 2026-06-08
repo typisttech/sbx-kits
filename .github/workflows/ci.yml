@@ -81,7 +81,7 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           annotations: ${{ steps.meta.outputs.annotations }}
           secrets: |
-            GH_TOKEN=${{ steps.app-token.outputs.token }}
+            GITHUB_TOKEN=${{ steps.app-token.outputs.token }}
 
   build:
     if: github.event_name == 'pull_request'

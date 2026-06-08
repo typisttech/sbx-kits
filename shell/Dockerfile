@@ -97,7 +97,7 @@ RUN sudo apt-get update \
         yq \
     && sudo rm -rf /var/lib/apt/lists/*
 
-RUN --mount=type=secret,id=GH_TOKEN,env=MISE_GITHUB_TOKEN,required=true,uid=1000 \
+RUN --mount=type=secret,id=GITHUB_TOKEN,env=GITHUB_TOKEN,required=true,uid=1000 \
     mise use --global \
         rtk@latest \
         ast-grep@latest \
@@ -108,7 +108,7 @@ RUN --mount=type=secret,id=GH_TOKEN,env=MISE_GITHUB_TOKEN,required=true,uid=1000
 # =============================================================================
 COPY --chown=agent:agent js/home/ /home/agent/
 
-RUN --mount=type=secret,id=GH_TOKEN,env=MISE_GITHUB_TOKEN,required=true,uid=1000 \
+RUN --mount=type=secret,id=GITHUB_TOKEN,env=GITHUB_TOKEN,required=true,uid=1000 \
     mise use --global \
         node@lts \
         npm@latest \
@@ -178,7 +178,7 @@ RUN sudo apt-get update \
 # =============================================================================
 COPY --chown=agent:agent ruby/home/ /home/agent/
 
-RUN --mount=type=secret,id=GH_TOKEN,env=MISE_GITHUB_TOKEN,required=true,uid=1000 \
+RUN --mount=type=secret,id=GITHUB_TOKEN,env=GITHUB_TOKEN,required=true,uid=1000 \
     sudo apt-get update \
     && sudo apt-get install --yes --no-install-recommends \
         build-essential \
