@@ -32,7 +32,6 @@ RUN touch /var/mail/ubuntu \
 USER agent
 WORKDIR /home/agent/workspace
 
-COPY --chown=root:root agent/profile.d/ /etc/profile.d/
 COPY --chown=agent:agent agent/home/ /home/agent/
 
 RUN echo '\n\nsource ${HOME}/.config/bash/rc.sh' >> /home/agent/.bashrc
