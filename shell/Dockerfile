@@ -43,31 +43,13 @@ RUN sudo apt-get update \
         bash-completion \
         build-essential \
         ca-certificates \
-        csvkit \
         curl \
-        dasel \
-        fd-find \
         file \
         git \
         gnupg \
-        gron \
-        jo \
-        jq \
         less \
-        lsof \
-        miller \
         nano \
-        openssh-client \
-        pkg-config \
-        ripgrep \
-        ripgrep-all \
-        sd \
-        tar \
-        tree \
-        tzdata \
         universal-ctags \
-        wget \
-        yq \
     && sudo rm -rf /var/lib/apt/lists/*
 
 # =============================================================================
@@ -82,18 +64,6 @@ RUN sudo apt-get update \
     && sudo rm -rf /var/lib/apt/lists/*
 
 # =============================================================================
-# rtk
-# =============================================================================
-RUN --mount=type=secret,id=GH_TOKEN,env=GH_TOKEN,required=true,uid=1000 \
-    gh release --repo rtk-ai/rtk download --pattern rtk-aarch64-unknown-linux-gnu.tar.gz \
-    && mkdir rtk \
-    && tar -xzf rtk-aarch64-unknown-linux-gnu.tar.gz -C ./rtk \
-    && sudo mv ./rtk/rtk /usr/local/bin/rtk \
-    && sudo chmod +x /usr/local/bin/rtk \
-    && rm rtk-aarch64-unknown-linux-gnu.tar.gz \
-    && rm -rf ./rtk
-
-# =============================================================================
 # Mise
 # https://mise.jdx.dev/installing-mise.html#apt
 # =============================================================================
@@ -106,12 +76,42 @@ RUN sudo apt-get update \
     && sudo rm -rf /var/lib/apt/lists/*
 
 # =============================================================================
+# Utilities
+# =============================================================================
+RUN sudo apt-get update \
+    && sudo apt-get install --yes --no-install-recommends \
+        csvkit \
+        dasel \
+        fd-find \
+        gron \
+        jo \
+        jq \
+        lsof \
+        miller \
+        ripgrep \
+        ripgrep-all \
+        sd \
+        tree \
+        wget \
+        yq \
+    && sudo rm -rf /var/lib/apt/lists/*
+
+RUN --mount=type=secret,id=GH_TOKEN,env=MISE_GITHUB_TOKEN,required=true,uid=1000 \
+    mise use --global \
+        rtk@latest \
+        ast-grep@latest \
+    && mise cache clear
+
+# =============================================================================
 # JavaScript
 # =============================================================================
 COPY --chown=agent:agent js/home/ /home/agent/
 
 RUN --mount=type=secret,id=GH_TOKEN,env=MISE_GITHUB_TOKEN,required=true,uid=1000 \
-    mise use --global node@lts npm@latest bun@1 \
+    mise use --global \
+        node@lts \
+        npm@latest \
+        bun@1 \
     && mise settings add idiomatic_version_file_enable_tools bun \
     && mise settings add idiomatic_version_file_enable_tools node \
     && mise settings add idiomatic_version_file_enable_tools npm \
