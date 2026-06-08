@@ -113,9 +113,6 @@ RUN --mount=type=secret,id=GH_TOKEN,env=MISE_GITHUB_TOKEN,required=true,uid=1000
         node@lts \
         npm@latest \
         bun@1 \
-    && mise settings add idiomatic_version_file_enable_tools bun \
-    && mise settings add idiomatic_version_file_enable_tools node \
-    && mise settings add idiomatic_version_file_enable_tools npm \
     && mise cache clear
 
 # =============================================================================
@@ -194,7 +191,6 @@ RUN --mount=type=secret,id=GH_TOKEN,env=MISE_GITHUB_TOKEN,required=true,uid=1000
         sqlite3 \
     && sudo rm -rf /var/lib/apt/lists/* \
     && mise use --global ruby@4.0 \
-    && mise settings add idiomatic_version_file_enable_tools ruby \
     && mise cache clear \
     && mise exec -- gem update --system \
     && mise exec -- gem update \
