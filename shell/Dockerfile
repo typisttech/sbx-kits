@@ -171,8 +171,6 @@ RUN sudo apt-get update \
     && GO_LATEST=$(curl -fsSL 'https://go.dev/VERSION?m=text' | head -n 1) \
     && go install "golang.org/dl/${GO_LATEST}@latest" \
     && "$(go env GOPATH)/bin/${GO_LATEST}" download \
-    # LSP
-    && "$(go env GOPATH)/bin/${GO_LATEST}" install golang.org/x/tools/gopls@latest \
     && go clean -cache -testcache -modcache -fuzzcache \
     && "$(go env GOPATH)/bin/${GO_LATEST}" clean -cache -testcache -modcache -fuzzcache
 
@@ -199,5 +197,4 @@ RUN --mount=type=secret,id=GH_TOKEN,env=MISE_GITHUB_TOKEN,required=true,uid=1000
     && mise cache clear \
     && mise exec -- gem update --system \
     && mise exec -- gem update \
-    && mise exec -- gem install ruby-lsp \
     && mise exec -- gem cleanup
