@@ -1,0 +1,21 @@
+schemaVersion: "1"
+kind: mixin
+name: codex
+
+network:
+  allowedDomains:
+    - "chatgpt.com:443"
+    - "github.com:443"
+    - "api.github.com:443"
+
+environment:
+  variables:
+    CODEX_HOME: "/Users/work/Developer/Agents/codex"
+
+commands:
+  install:
+    - command: |
+        set -euo pipefail
+        curl -fsSL https://chatgpt.com/codex/install.sh | CODEX_NON_INTERACTIVE=1 sh
+      user: "1000"
+      description: Install Codex
