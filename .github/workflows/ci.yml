@@ -31,7 +31,7 @@ jobs:
       - run: sbx version
 
       - run: sbx kit validate ./dev
-      - run: sbx kit validate ./claude
+      - run: sbx kit validate ./codex
 
   build-and-push:
     if: github.event_name != 'pull_request' && github.ref_name == 'main'
