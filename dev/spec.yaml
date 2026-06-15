@@ -73,5 +73,5 @@ commands:
         mkdir -p ~/.local/share
         ln -s /Users/work/Developer/Agents/rtk/share ~/.local/share/rtk
 
-        rtk telemetry disable
+        mise exec -- rtk telemetry disable
       user: "1000"
