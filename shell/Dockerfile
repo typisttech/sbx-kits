@@ -103,6 +103,15 @@ RUN --mount=type=secret,id=GITHUB_TOKEN,env=GITHUB_TOKEN,required=true,uid=1000 
     && mise cache clear
 
 # =============================================================================
+# SSH
+# =============================================================================
+RUN sudo apt-get update \
+    && sudo apt-get install --yes --no-install-recommends \
+        openssh-client \
+        openssh-server \
+    && sudo rm -rf /var/lib/apt/lists/*
+
+# =============================================================================
 # JavaScript
 # =============================================================================
 COPY --chown=agent:agent js/home/ /home/agent/
