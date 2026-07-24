@@ -2,7 +2,7 @@ schemaVersion: "1"
 kind: agent
 name: dev
 
-agent:
+sandbox:
   image: "ghcr.io/typisttech/sandbox-templates:shell"
   aiFilename: AGENTS.md
   entrypoint:
