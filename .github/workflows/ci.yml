@@ -101,4 +101,4 @@ jobs:
           platforms: linux/arm64
           push: false
           secrets: |
-            GH_TOKEN=${{ github.token }}
+            GITHUB_TOKEN=${{ github.token }}
