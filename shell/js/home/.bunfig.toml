@@ -1,4 +1,0 @@
-[install]
-minimumReleaseAge = 259200 # 3 days
-ignoreScripts = true
-telemetry = false
