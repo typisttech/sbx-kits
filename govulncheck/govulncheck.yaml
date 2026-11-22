@@ -19,7 +19,7 @@ provides:
   - "govulncheck@${{ kit.args.version }}"
 
 requires:
-  - "go >= 1.26.0, < 2"
+  - go
 
 capabilities:
   - type: com.docker.sandbox/network-policy@1
