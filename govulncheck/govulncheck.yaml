@@ -1,0 +1,29 @@
+# syntax=docker/sandbox-kit:3
+# yaml-language-server: $schema=https://raw.githubusercontent.com/docker/sandbox-kit-spec/main/schema/kit.schema.json
+schemaVersion: "3"
+displayName: govulncheck
+description: Install govulncheck
+
+kind: mixin
+
+version: "${{ kit.args.version }}"
+
+args:
+  version:
+    default: "1.10.0"
+    pattern: '^[0-9]+\.[0-9]+\.[0-9]+$'
+    description: govulncheck release to install
+    buildArg: GOVULNCHECK_VERSION
+
+provides:
+  - "govulncheck@${{ kit.args.version }}"
+
+requires:
+  - "go >= 1.26.0, < 2"
+
+capabilities:
+  - type: com.docker.sandbox/network-policy@1
+    config:
+      runtime:
+        allow:
+          - vuln.go.dev
