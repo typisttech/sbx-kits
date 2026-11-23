@@ -3,8 +3,7 @@
 schemaVersion: "3"
 displayName: Go
 description: >-
-  Go from the official release archive, with module downloads and
-  Go settings prepared for each sandbox
+  Go installation and settings
 licenses:
   - BSD-3-Clause
 
@@ -40,7 +39,7 @@ capabilities:
             set -euo pipefail
             cd "$WORKSPACE_DIR"
             [ -f go.mod ] || exit 0
-            HOME=/home/agent go mod download
+            # HOME=/home/agent go mod download
           user: "1000"
           env: [WORKSPACE_DIR, GOPATH]
           description: Download the workspace's Go modules
@@ -54,4 +53,15 @@ capabilities:
 
   - type: com.docker.sandbox/agent-context@1
     config:
-      contentFile: ./go-context.md
+      content: |
+        ## Go
+
+        Go ${{ kit.args.version }} is installed at `/usr/local/go` and is on `PATH`.
+
+        Modules come from `proxy.golang.org` only: `GOPROXY` has no `direct`
+        fallback, so a module that isn't on the proxy fails to download
+        instead of being fetched from its Git host.
+
+        `GOTOOLCHAIN` is `local`, so Go never downloads a different toolchain.
+
+        Don't raise the `go` line in `go.mod` above ${{ kit.args.version }}.
