@@ -2,8 +2,7 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/docker/sandbox-kit-spec/main/schema/kit.schema.json
 schemaVersion: "3"
 displayName: Go
-description: >-
-  Go installation and settings
+description: Install Go and set up Go environment variables
 licenses:
   - BSD-3-Clause
 
