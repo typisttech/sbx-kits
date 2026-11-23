@@ -27,3 +27,16 @@ capabilities:
       runtime:
         allow:
           - vuln.go.dev
+
+  - type: com.docker.sandbox/lifecycle@1
+    config:
+      install:
+        - command: |
+            set -euo pipefail
+            HOME=/home/agent go install golang.org/x/vuln/cmd/govulncheck@v${{ kit.args.version }}
+            govulncheck --version | grep -q "govulncheck@v${{ kit.args.version }}"
+          user: "1000"
+          env:
+            - GOPATH
+            - GOBIN
+          description: Install govulncheck
