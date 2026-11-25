@@ -17,9 +17,10 @@ capabilities:
     config:
       install:
         allow: &allow
-          - mise-versions.jdx.dev
-          - github.com
           - api.github.com
+          - github.com
+          - mise-versions.jdx.dev
+          - tuf-repo-cdn.sigstore.dev
         deny: &deny
           - hosts: [mise-versions.jdx.dev]
             methods: [ANY]
