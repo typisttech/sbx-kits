@@ -15,11 +15,9 @@ args:
     description: govulncheck release to install
     buildArg: GOVULNCHECK_VERSION
 
-provides:
-  - "govulncheck@${{ kit.args.version }}"
+provides: ["govulncheck@${{ kit.args.version }}"]
 
-requires:
-  - go
+requires: [go]
 
 capabilities:
   - type: com.docker.sandbox/network-policy@1
@@ -36,7 +34,5 @@ capabilities:
             HOME=/home/agent go install golang.org/x/vuln/cmd/govulncheck@v${{ kit.args.version }}
             govulncheck --version | grep -q "govulncheck@v${{ kit.args.version }}"
           user: "1000"
-          env:
-            - GOPATH
-            - GOBIN
+          env: [GOPATH, GOBIN]
           description: Install govulncheck

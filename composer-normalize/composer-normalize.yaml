@@ -1,0 +1,32 @@
+# syntax=docker/sandbox-kit:3
+# yaml-language-server: $schema=https://raw.githubusercontent.com/docker/sandbox-kit-spec/main/schema/kit.schema.json
+schemaVersion: "3"
+displayName: composer-normalize
+description: Install ergebnis/composer-normalize
+licenses:
+  - MIT
+
+kind: mixin
+
+version: "${{ kit.args.version }}"
+
+args:
+  version:
+    default: "2.58.0"
+    pattern: '^[0-9]+\.[0-9]+\.[0-9]+$'
+    description: composer-normalize release to use
+    buildArg: COMPOSER_NORMALIZE_VERSION
+
+provides: ["composer-normalize@${{ kit.args.version }}"]
+
+requires: [php]
+
+capabilities:
+  - type: com.docker.sandbox/agent-context@2
+    config:
+      content: |
+        ## composer-normalize
+
+        ergebnis/composer-normalize ${{ kit.args.version }} is installed and is on `PATH`.
+
+        Run `$ composer-normalize` to normalize `composer.json` in the working directory.

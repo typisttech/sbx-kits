@@ -9,3 +9,5 @@ docker buildx build --builder kit-builder \
     --build-arg version=1.27.2 \
     -t tt-sbx-kit/go:1.27.2 \
     --output type=oci,dest=/tmp/tt-sbx-kit-layout-go,tar=false
+
+kit-tck inspect -layout /tmp/tt-sbx-kit-layout-go 1.27.2
