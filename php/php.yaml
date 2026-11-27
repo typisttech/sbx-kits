@@ -167,13 +167,16 @@ capabilities:
               composer config --global github-oauth.github.com "${COMPOSER_GITHUB_TOKEN}"
           env: [COMPOSER_GITHUB_TOKEN]
           user: "1000"
-          description: Set up github.com oauth access for Composer
+          description: Set up GitHub oauth access for Composer
 
         - command: |
             mise exec php@${{ kit.args.version }} -- \
               composer config --global notify-on-install false
+
+            mise exec php@${{ kit.args.version }} -- \
+              composer config --global store-auths false
           user: "1000"
-          description: Disable Composer notify on install
+          description: Set Composer global settings
 
         - command: |
             set -euo pipefail
