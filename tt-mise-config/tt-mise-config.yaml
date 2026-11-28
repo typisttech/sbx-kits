@@ -48,7 +48,19 @@ capabilities:
       install:
         - command: |
             set -euo pipefail
+            mise settings set yes true
             mise settings set use_versions_host_track false
             mise settings set minimum_release_age 3d
           user: "1000"
           description: Set mise settings
+
+        - command: |
+            set -euo pipefail
+            cd "$WORKSPACE_DIR"
+            [ -f mise.toml ] || exit 0
+            mise install
+          user: "1000"
+          env:
+            - WORKSPACE_DIR
+            - MISE_GITHUB_TOKEN
+          description: Install the workspace's tools via mise

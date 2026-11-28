@@ -17,10 +17,20 @@ args:
 
   composer_fund:
     default: "0"
-    enum:
-      - "0"
-      - "1"
+    enum: ["0", "1"]
+    description: Whether to display funding notices when installing
     env: COMPOSER_FUND
+
+  composer_memory_limit:
+    default: "-1"
+    description: PHP's memory_limit. -1 means unlimited
+    env: COMPOSER_MEMORY_LIMIT
+
+  composer_no_interaction:
+    default: "1"
+    enum: ["0", "1"]
+    description: Whether to suppress interactive question
+    env: COMPOSER_NO_INTERACTION
 
 provides: ["php@${{ kit.args.version }}"]
 
@@ -143,12 +153,6 @@ capabilities:
             wSEuAuRm+pRqi8BRnQ/GKUcCAwEAAQ==
             -----END PUBLIC KEY-----
             EOF
-          user: "1000"
-          description: Write Composer dev / snapshot public key
-
-        - command: |
-            set -euo pipefail
-            composer_home=$(mise exec php@${{ kit.args.version }} -- composer config --global --absolute home)
 
             cat > "${composer_home}/keys.tags.pub" <<'EOF'
             -----BEGIN PUBLIC KEY-----
@@ -167,22 +171,17 @@ capabilities:
             -----END PUBLIC KEY-----
             EOF
           user: "1000"
-          description: Write Composer tags public key
+          env: [COMPOSER_NO_INTERACTION]
+          description: Write Composer public keys
 
         - command: |
-            mise exec php@${{ kit.args.version }} -- \
-              composer config --global github-oauth.github.com "${COMPOSER_GITHUB_TOKEN}"
-          env: [COMPOSER_GITHUB_TOKEN]
-          user: "1000"
-          description: Set up GitHub oauth access for Composer
-
-        - command: |
-            mise exec php@${{ kit.args.version }} -- \
-              composer config --global notify-on-install false
-
-            mise exec php@${{ kit.args.version }} -- \
+            mise exec php@${{ kit.args.version }} --command '
+              composer config --global github-oauth.github.com "${COMPOSER_GITHUB_TOKEN}" &&
+              composer config --global notify-on-install false &&
               composer config --global store-auths false
+            '
           user: "1000"
+          env: [COMPOSER_GITHUB_TOKEN, COMPOSER_NO_INTERACTION]
           description: Set Composer global settings
 
         - command: |
@@ -203,16 +202,22 @@ capabilities:
             printf '%s' "$diagnose" | grep -Fq \
               'github.com oauth access: OK'
           user: "1000"
+          env: [COMPOSER_NO_INTERACTION]
           description: Verify Composer is installed
 
         - command: |
             set -euo pipefail
             cd "$WORKSPACE_DIR"
             [ -f composer.json ] || exit 0
-            mise exec php@${{ kit.args.version }} -- composer install --download-only
+            mise exec php@${{ kit.args.version }} -- composer install
           user: "1000"
-          env: [WORKSPACE_DIR]
-          description: Download the workspace's Composer packages
+          env:
+            - WORKSPACE_DIR
+            - COMPOSER_GITHUB_TOKEN
+            - COMPOSER_FUND
+            - COMPOSER_MEMORY_LIMIT
+            - COMPOSER_NO_INTERACTION
+          description: Install the workspace's Composer dependencies
 
   - type: com.docker.sandbox/agent-context@2
     config:
