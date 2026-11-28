@@ -15,6 +15,13 @@ args:
     description: PHP release to install
     buildArg: PHP_VERSION
 
+  composer_fund:
+    default: "0"
+    enum:
+      - "0"
+      - "1"
+    env: COMPOSER_FUND
+
 provides: ["php@${{ kit.args.version }}"]
 
 requires:
